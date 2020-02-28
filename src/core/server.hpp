@@ -8,6 +8,7 @@
 #include "../common.hpp"
 #include "../types/interfaces.hpp"
 #include "telemetry.hpp"
+#include "config.hpp"
 
 namespace graphd {
 
@@ -19,12 +20,16 @@ namespace graphd {
     class Server : public ServerLike {
     private:
         std::shared_ptr<TelemetryLike> _telemetry;
+        std::shared_ptr<Config> _config;
 
     public:
         /**
          * Default constructor
          */
-        Server(std::shared_ptr<TelemetryLike> telemetry) : _telemetry(telemetry) { }
+        Server(
+            std::shared_ptr<Config> config,
+            std::shared_ptr<TelemetryLike> telemetry
+        ) : _telemetry(telemetry), _config(config) { }
 
         Server(const Server&) = delete;
         Server(Server&&) = delete;
@@ -33,9 +38,15 @@ namespace graphd {
 
         /**
          * Retrieves the telemetry system for this server
-         * @return TelemetryLike&
+         * @return std::shared_ptr<TelemetryLike>
          */
         std::shared_ptr<TelemetryLike> getTelemetry(void) { return this->_telemetry; }
+
+        /**
+         * Retrieves the configuration information for this server
+         * @return std::shared_ptr<Config>
+         */
+        std::shared_ptr<Config> getConfig(void) { return this->_config; }
 
     private:
     };

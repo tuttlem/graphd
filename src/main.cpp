@@ -2,42 +2,16 @@
 #include <iostream>
 #include "./common.hpp"
 #include "./core/log.hpp"
-#include "./core/server.hpp"
-#include "./db/types/id.hpp"
-
-void doingSomething() {
-    log_fn();
-    log_info << "doing something";
-}
+#include "./core/config.hpp"
 
 int main() {
     try {
-        log_scope("main");
-        log_trace << "creating server object";
+        // auto config = graphd::Config::getDefault();
 
-        /* the single server object that will manage the entire system */
-        graphd::Server server = graphd::Server(
-                std::make_shared<graphd::Telemetry>()
-        );
+        auto config = graphd::Config::loadFromFile("graphd.conf");
+        graphd::Config::adjustWithEnvironment(config);
 
-        log_trace << "initializing logging system";
-        graphd::configureLogger("debug", "/tmp/graphd_%N.log");
-
-        log_trace << "ok, shouldn\'t see this one";
-        log_debug << "here now";
-        log_info << "here now";
-        log_error << "here now";
-        log_fatal << "here now";
-
-        auto id = graphd::Id::create();
-        std::cout << id->toString();
-        // initialize
-
-        doingSomething();
-        // run
-
-        // teardown
-
+        log_info << config->_logLevel;
     } catch (std::exception e) {
         BOOST_LOG_TRIVIAL(error) << "Bad shit";
     }

@@ -6,6 +6,7 @@
 #define GRAPHD_INTERFACES_HPP
 
 #include "../common.hpp"
+#include "../core/config.hpp"
 
 namespace graphd {
 
@@ -22,6 +23,7 @@ namespace graphd {
     class ServerLike {
     public:
         virtual std::shared_ptr<TelemetryLike> getTelemetry(void) = 0;
+        virtual std::shared_ptr<Config> getConfig(void) = 0;
     };
 
 }
