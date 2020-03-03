@@ -18,6 +18,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/conf/graphd.conf ${CMAKE_CURRENT_BINA
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
 
-add_executable(graphd src/main.cpp src/core/server.cpp src/core/server.hpp src/types/errors.hpp src/common.hpp src/core/telemetry.cpp src/core/telemetry.hpp src/types/interfaces.hpp src/db/types/id.cpp src/db/types/id.hpp src/core/log.hpp src/core/log.cpp src/core/config.cpp src/core/config.hpp)
+add_executable(graphd src/main.cpp src/core/server.cpp src/core/server.hpp src/types/errors.hpp src/common.hpp src/core/telemetry.cpp src/core/telemetry.hpp src/types/interfaces.hpp src/db/types/id.cpp src/db/types/id.hpp src/core/log.hpp src/core/log.cpp src/core/config.cpp src/core/config.hpp src/db/database.cpp src/db/database.hpp src/db/types/interfaces.hpp src/db/graph.cpp src/db/graph.hpp src/db/vertex.cpp src/db/vertex.hpp src/db/edge.cpp src/db/edge.hpp)
 target_link_libraries(graphd ${Boost_LIBRARIES})
 

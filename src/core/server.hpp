@@ -40,13 +40,13 @@ namespace graphd {
          * Retrieves the telemetry system for this server
          * @return std::shared_ptr<TelemetryLike>
          */
-        std::shared_ptr<TelemetryLike> getTelemetry(void) { return this->_telemetry; }
+        TelemetryLike* getTelemetry(void) { return this->_telemetry.get(); }
 
         /**
          * Retrieves the configuration information for this server
          * @return std::shared_ptr<Config>
          */
-        std::shared_ptr<Config> getConfig(void) { return this->_config; }
+        Config* getConfig(void) { return this->_config.get(); }
 
     private:
     };

@@ -53,7 +53,7 @@ namespace graphd {
          * String representation of this Id
          * @return std::string
          */
-        const std::string toString();
+        const std::string toString() const;
     };
 
 }

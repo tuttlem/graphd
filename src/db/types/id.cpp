@@ -41,7 +41,7 @@ namespace graphd {
      * String representation of this Id
      * @return std::string
      */
-    const std::string Id::toString() {
+    const std::string Id::toString() const {
         std::stringstream ss;
 
         ss <<  std::right << std::setfill('0') << std::setw(8) << std::hex << this->getTimestamp();

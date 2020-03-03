@@ -22,8 +22,8 @@ namespace graphd {
 
     class ServerLike {
     public:
-        virtual std::shared_ptr<TelemetryLike> getTelemetry(void) = 0;
-        virtual std::shared_ptr<Config> getConfig(void) = 0;
+        virtual TelemetryLike* getTelemetry(void) = 0;
+        virtual Config* getConfig(void) = 0;
     };
 
 }
