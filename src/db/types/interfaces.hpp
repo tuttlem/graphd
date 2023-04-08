@@ -49,7 +49,7 @@ namespace graphd {
         virtual const Id* addVertex(void) = 0;
 
         /**
-         * Retrieves the current in-memory managed table of edges
+         * Finds an edge for the given ID
          * @return EdgeLike*
          */
         virtual const EdgeLike* seekEdgeById(const Id* id) = 0;
@@ -61,7 +61,6 @@ namespace graphd {
         virtual const Id* addEdge(const Id* a, const Id* b) = 0;
 
     };
-
 }
 
 #endif //GRAPHD_INTERFACES_HPP

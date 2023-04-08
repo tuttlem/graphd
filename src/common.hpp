@@ -6,6 +6,7 @@
 #define GRAPHD_COMMON_HPP
 
 #include <unistd.h>
+#include <stdint.h>
 
 #include <string>
 #include <exception>
@@ -15,6 +16,7 @@
 #include <vector>
 #include <array>
 #include <iomanip>
+#include <iostream>
 
 #define BOOST_LOG_DYN_LINK 1
 

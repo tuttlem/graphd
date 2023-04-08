@@ -73,6 +73,38 @@ namespace graphd {
          */
         const std::string getMetricName() { return this->_metricName; }
     };
+
+    class ValidationException : public GeneralException {
+    protected:
+        std::string _typeName;
+        std::string _value;
+        std::string _reason;
+
+    public:
+        /**
+         * Construct with type name and failing value
+         */
+         explicit ValidationException(const std::string &typeName, const std::string &value, const std::string &reason)
+            : _typeName(typeName), _value(value), _reason(reason), GeneralException("Invalid " + typeName + " value \"" + value + "\": " + reason) { }
+
+        /**
+         * Retrieves the type name being validated
+         * @return std::string
+         */
+        const std::string getTypeName() { return this->_typeName; }
+
+        /**
+         * Retrieves the value being validated
+         * @return std::string
+         */
+        const std::string getValue() { return this->_value; }
+
+        /**
+         * Retrieves the reason validation failed
+         * @return std::string
+         */
+        const std::string getReason() { return this->_reason; }
+    };
 }
 
 #endif //GRAPHD_ERRORS_HPP

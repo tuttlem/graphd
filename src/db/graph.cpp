@@ -74,7 +74,7 @@ namespace graphd {
     }
 
     /**
-     * Retrieves the current in-memory managed table of edges
+     * Attempts to find an edge for a given id
      * @return EdgeLike*
      */
     const EdgeLike* Graph::seekEdgeById(const Id* id) {
