@@ -90,7 +90,7 @@ namespace graphd {
      * @param os The output stream to serialize to
      */
     void Id::serialize(std::ostream& os) {
-        os.write(reinterpret_cast<const char *>(this->_value), sizeof(this->_value));
+        os.write(reinterpret_cast<const char *>(this->_value.data()), sizeof(this->_value));
     }
 
     /**
@@ -98,7 +98,7 @@ namespace graphd {
      * @param is The input stream to deserialize from
      */
     void Id::deserialize(std::istream& is) {
-        is.read(reinterpret_cast<char *>(this->_value), sizeof(this->_value));
+        is.read(reinterpret_cast<char *>(this->_value.data()), sizeof(this->_value));
     }
 
 

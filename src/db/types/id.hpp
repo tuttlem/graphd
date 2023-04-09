@@ -10,12 +10,17 @@
 #include "../io/serialization.hpp"
 
 namespace graphd {
-  /**
-  * The basic identifier type for anything internally in the database will
-  * be expressed as an InternalId. Structure of this data type is as follows
-  * |timestamp|   pid   |  random | counter |
-  * |-4 bytes-|-4 bytes-|-4 bytes-|-4 bytes-|
-  */
+    class Id;
+
+    typedef std::array<uint32_t, 4> id_val_t;
+    typedef std::shared_ptr<Id> IdPtr;
+
+    /**
+    * The basic identifier type for anything internally in the database will
+    * be expressed as an InternalId. Structure of this data type is as follows
+    * |timestamp|   pid   |  random | counter |
+    * |-4 bytes-|-4 bytes-|-4 bytes-|-4 bytes-|
+    */
     class Id : Serializable {
     private:
         static const int TIMESTAMP = 0;
@@ -24,7 +29,7 @@ namespace graphd {
         static const int COUNTER = 3;
 
         static unsigned int _currentCounter;
-        uint32_t _value[4];
+        std::array<uint32_t, 4> _value;
 
     public:
         /** Default constructor */
@@ -34,17 +39,19 @@ namespace graphd {
         /** Move constructor */
         Id(Id&&) = default;
 
+        const id_val_t getValue() const { return this->_value; }
+
         /**
          * Creates a new, randomized identifier usable within the database system
          * @return Id*
          */
-        static std::shared_ptr<Id> create();
+        static IdPtr create();
 
         /**
          * Creates a new Id object from a stream
          * @return InternalId*
          */
-        static std::shared_ptr<Id> create(std::istream &is);
+        static IdPtr create(std::istream &is);
 
         /**
          * Creates an ID object given an existing string representation

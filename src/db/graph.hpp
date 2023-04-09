@@ -6,18 +6,19 @@
 #define GRAPHD_GRAPH_HPP
 
 #include "../common.hpp"
-#include "types/interfaces.hpp"
+#include "./types/id.hpp"
+#include "./types/properties.hpp"
 
 namespace graphd {
+
+    typedef std::map<id_val_t, IdPtr> node_map_t;
+    typedef std::map<id_val_t, std::pair<IdPtr, IdPtr>> edge_map_t;
+
 
     /**
      * The graph data structure implementation
      */
-    class Graph : public GraphLike {
-    private:
-        std::map<std::string, std::shared_ptr<VertexLike>> _vertexTable;
-        std::map<std::string, std::shared_ptr<EdgeLike>> _edgeTable;
-
+    class Graph {
     public:
         /**
          * Default constructor
@@ -29,42 +30,30 @@ namespace graphd {
 
         virtual ~Graph(void) = default;
 
-        /**
-          * Retrieves the current in-memory managed table of vertices
-          * @return std::vector<VertexLike*>
-          */
-        const std::vector<VertexLike*> getVertexTable(void);
+        inline const node_map_t getNodes(void) const { return _nodes; }
+        inline const data_map_t getNodeData(void) const { return _nodeData; }
+        inline const edge_map_t getEdges(void) const { return _edges; }
+        inline const data_map_t getEdgeData(void) const { return _edgeData; }
 
-        /**
-         * Retrieves the current in-memory managed table of edges
-         * @return std::vector<EdgeLike*>
-         */
-        const std::vector<EdgeLike*> getEdgeTable(void);
+        const IdPtr addNode(const property_map_t& data = property_map_t());
+        const IdPtr addEdge(const IdPtr from, const IdPtr to, const property_map_t& data = property_map_t());
 
-        /**
-         * Attempts to seek a vertex by its id
-         * @return VertexLike*
-         */
-        const VertexLike* seekVertexById(const Id* id);
+        const IdPtr removeNode(const IdPtr id);
+        const IdPtr removeEdge(const IdPtr id);
 
-        /**
-         * Creates a new vertex and makes it available to be attached to
-         * within the graph
-         * @return Id*
-         */
-        const Id* addVertex(void);
+        const IdPtr updateNode(const IdPtr id, const property_map_t& data = property_map_t());
+        const IdPtr updateEdge(const IdPtr id, const property_map_t& data = property_map_t());
 
-        /**
-         * Retrieves the current in-memory managed table of edges
-         * @return EdgeLike*
-         */
-        const EdgeLike* seekEdgeById(const Id* id);
+        const std::vector<IdPtr> getAdjacentNodes(const IdPtr id) const;
+        const std::vector<IdPtr> getAdjacentEdges(const IdPtr id) const;
 
-        /**
-         * Creates a new edge between two nodes and adds it to the graph
-         * @return Id*
-         */
-        const Id* addEdge(const Id* a, const Id* b);
+
+    private:
+        node_map_t _nodes;
+        data_map_t _nodeData;
+
+        edge_map_t _edges;
+        data_map_t _edgeData;
     };
 
 }

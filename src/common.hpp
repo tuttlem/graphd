@@ -17,6 +17,7 @@
 #include <array>
 #include <iomanip>
 #include <iostream>
+#include <variant>
 
 #define BOOST_LOG_DYN_LINK 1
 

@@ -3,106 +3,79 @@
 //
 
 #include "graph.hpp"
-#include "vertex.hpp"
-#include "edge.hpp"
 
 namespace graphd {
-
-    /**
-      * Retrieves the current in-memory managed table of vertices
-      * @return std::vector<VertexLike*>
-      */
-    const std::vector<VertexLike*> Graph::getVertexTable(void) {
-        std::vector<VertexLike*> vertices;
-        std::transform(
-                this->_vertexTable.begin(),
-                this->_vertexTable.end(),
-                vertices.begin(),
-                [](std::pair<std::string, std::shared_ptr<VertexLike>> p) -> VertexLike* { return p.second.get(); }
-        );
-
-        return vertices;
+    const IdPtr Graph::addNode(const property_map_t& data) {
+        auto id = Id::create();
+        _nodes[id->getValue()] = id;
+        _nodeData[id->getValue()] = data;
+        return id;
     }
 
-    /**
-     * Retrieves the current in-memory managed table of edges
-     * @return std::vector<EdgeLike*>
-     */
-    const std::vector<EdgeLike*> Graph::getEdgeTable(void) {
-        std::vector<EdgeLike*> edges;
-        std::transform(
-                this->_edgeTable.begin(),
-                this->_edgeTable.end(),
-                edges.begin(),
-                [](std::pair<std::string, std::shared_ptr<EdgeLike>> p) -> EdgeLike* { return p.second.get(); }
-        );
-
-        return edges;
+    const IdPtr Graph::addEdge(const IdPtr from, const IdPtr to, const property_map_t& data) {
+        auto id = Id::create();
+        _edges[id->getValue()] = std::make_pair(from, to);
+        _edgeData[id->getValue()] = data;
+        return id;
     }
 
-    /**
-     * Attempts to seek a vertex by its id
-     * @return VertexLike*
-     */
-    const VertexLike* Graph::seekVertexById(const Id* id) {
-        auto s = id->toString();
-        auto v = this->_vertexTable.find(s);
+    const IdPtr Graph::removeNode(const IdPtr id) {
+        auto idVal = id->getValue();
 
-        if (v == this->_vertexTable.end()) {
-            return nullptr;
+        std::vector<id_val_t> toRemove;
+        for (auto& [edgeId, edge] : _edges) {
+            if (edge.first->getValue() == idVal || edge.second->getValue() == idVal) {
+                toRemove.push_back(edgeId);
+            }
         }
 
-        return v->second.get();
-    }
-
-    /**
-     * Creates a new vertex and makes it available to be attached to
-     * within the graph
-     * @return Id*
-     */
-    const Id* Graph::addVertex(void) {
-        auto vertex = std::make_shared<Vertex>();
-        auto id = vertex->getId();
-        auto s = id->toString();
-
-        if (this->_vertexTable.find(s) != this->_vertexTable.end()) {
-            // todo: throw an exception here!
+        for (auto& edgeId : toRemove) {
+            _edges.erase(edgeId);
+            _edgeData.erase(edgeId);
         }
 
-        this->_vertexTable[s] = vertex;
-        return vertex->getId();
+        _nodes.erase(id->getValue());
+        _nodeData.erase(id->getValue());
+
+        return id;
     }
 
-    /**
-     * Attempts to find an edge for a given id
-     * @return EdgeLike*
-     */
-    const EdgeLike* Graph::seekEdgeById(const Id* id) {
-        auto s = id->toString();
-        auto v = this->_edgeTable.find(s);
-
-        if (v == this->_edgeTable.end()) {
-            return nullptr;
-        }
-
-        return v->second.get();
+    const IdPtr Graph::removeEdge(const IdPtr id) {
+        _edges.erase(id->getValue());
+        _edgeData.erase(id->getValue());
+        return id;
     }
 
-    /**
-     * Creates a new edge between two nodes and adds it to the graph
-     * @return Id*
-     */
-    const Id* Graph::addEdge(const Id* a, const Id* b) {
-        auto edge = std::make_shared<Edge>();
-        auto id = edge->getId();
-        auto s = id->toString();
+    const IdPtr Graph::updateNode(const IdPtr id, const property_map_t& data) {
+        _nodeData[id->getValue()] = data;
+        return id;
+    }
 
-        if (this->_edgeTable.find(s) != this->_edgeTable.end()) {
-            // todo: throw an exception here!
+    const IdPtr Graph::updateEdge(const IdPtr id, const property_map_t& data) {
+        _edgeData[id->getValue()] = data;
+        return id;
+    }
+
+    const std::vector<IdPtr> Graph::getAdjacentNodes(const IdPtr id) const {
+        std::vector<IdPtr> adjacentNodes;
+        for (auto& [edgeId, edge] : _edges) {
+            if (edge.first->getValue() == id->getValue()) {
+                adjacentNodes.push_back(edge.second);
+            }
         }
+        return adjacentNodes;
+    }
 
-        this->_edgeTable[s] = edge;
-        return edge->getId();
+    const std::vector<IdPtr> Graph::getAdjacentEdges(const IdPtr id) const {
+        std::vector<IdPtr> adjacentEdges;
+        auto idVal = id->getValue();
+
+        for (auto& [edgeId, edge] : _edges) {
+            if (edge.first->getValue() == idVal || edge.second->getValue() == idVal) {
+                adjacentEdges.push_back(edgeId);
+            }
+        }
+        return adjacentEdges;
     }
 
 }

@@ -6,44 +6,44 @@
 
 #include "./db/graph.hpp"
 
+void printGraph(const graphd::Graph& graph) {
+    auto nodes = graph.getNodes();
+    auto nodeData = graph.getNodeData();
+    auto edges = graph.getEdges();
+    auto edgeData = graph.getEdgeData();
+
+    std::cout << "Nodes: " << nodes.size() << std::endl;
+    std::cout << "Edges: " << edges.size() << std::endl;
+
+    for (auto node : nodes) {
+        std::cout << "Node: " << node.second->toString() << std::endl;
+        std::cout << graphd::propertyMapToString(nodeData[node.second->getValue()]) << std::endl;
+    }
+
+    for (auto edge : edges) {
+        std::cout << "Edge: " << edge.second.first->toString() << " -> " << edge.second.second->toString() << std::endl;
+    }
+
+    std::cout << "Done";
+}
+
+
 int main() {
     try {
-        // auto config = graphd::Config::getDefault();
-        /*
-        auto config = graphd::Config::loadFromFile("graphd.conf");
-        graphd::Config::adjustWithEnvironment(config);
+        auto graph = graphd::Graph();
 
-        log_info << config->_logLevel;
+        auto a = graph.addNode({ {"name", "a"}, {"value", 1} });
+        auto b = graph.addNode();
+        auto c = graph.addNode();
 
-        auto graph = std::make_shared<graphd::Graph>();
-        auto v1 = graph->addVertex();
-        auto v2 = graph->addVertex();
-        auto e1 = graph->addEdge(v1, v2);
+        auto ab = graph.addEdge(a, b);
+        auto bc = graph.addEdge(b, c);
+        auto ca = graph.addEdge(c, a);
 
-        auto id1 = graph->seekVertexById(v1)->getId();
-        log_info << "found: " << id1->toString();
-        */
+        printGraph(graph);
 
-        auto id1 = graphd::Id::create();
-        auto id2 = graphd::Id::create();
-
-        std::ofstream outFile("ids.bin", std::ios::binary);
-        id1->serialize(outFile);
-        id2->serialize(outFile);
-        outFile.close();
-
-        std::ifstream inFile("ids.bin", std::ios::binary);
-        auto id3 = graphd::Id::create(inFile);
-        auto id4 = graphd::Id::create(inFile);
-        inFile.close();
-
-        log_info << "\n 1: " << id1->toString() << \
-                    "\n 2: " << id2->toString() << \
-                    "\n 3: " << id3->toString() << \
-                    "\n 4: " << id4->toString();
-
-        // log_info << "1 and 3 are equal? " << (*id1 == *id3);
-        //log_info << "2 and 4 are equal? " << (*id2 == *id4);
+        graph.removeNode(b);
+        printGraph(graph);
 
     } catch (std::exception e) {
         BOOST_LOG_TRIVIAL(error) << "Bad shit";
