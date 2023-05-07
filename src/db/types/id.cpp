@@ -86,6 +86,19 @@ namespace graphd {
     }
 
     /**
+     * Creates an ID object given an existing internal value
+     * @param value The internal value of the id
+     * @return Id*
+     */
+    std::shared_ptr<Id> Id::fromValue(const std::array<uint32_t, 4> &value) {
+        auto obj = std::make_shared<Id>();
+        obj->_value = value;
+
+        return obj;
+    }
+
+
+    /**
      * Serializes this object to the given output stream
      * @param os The output stream to serialize to
      */

@@ -53,12 +53,20 @@ namespace graphd {
          */
         static IdPtr create(std::istream &is);
 
+
         /**
          * Creates an ID object given an existing string representation
          * @param s The string representation of the id
          * @return Id*
          */
         static std::shared_ptr<Id> fromString(const std::string &s);
+
+        /**
+         * Creates an ID object given an existing internal value
+         * @param value The internal value of the id
+         * @return Id*
+         */
+        static std::shared_ptr<Id> fromValue(const std::array<uint32_t, 4> &value);
 
         const unsigned int getTimestamp() const { return this->_value[Id::TIMESTAMP]; }
         const unsigned int getPid() const { return this->_value[Id::PID]; }

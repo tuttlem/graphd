@@ -16,37 +16,68 @@ void printGraph(const graphd::Graph& graph) {
     std::cout << "Edges: " << edges.size() << std::endl;
 
     for (auto node : nodes) {
-        std::cout << "Node: " << node.second->toString() << std::endl;
+        std::cout << "Node: " << node.second->toString() << " ";
         std::cout << graphd::propertyMapToString(nodeData[node.second->getValue()]) << std::endl;
     }
 
     for (auto edge : edges) {
-        std::cout << "Edge: " << edge.second.first->toString() << " -> " << edge.second.second->toString() << std::endl;
+        std::cout << "Edge: " << graphd::Id::fromValue(edge.first)->toString();
+        std::cout << " (" << edge.second.first->toString() << " -> " << edge.second.second->toString() << ")" << std::endl;
     }
 
-    std::cout << "Done";
+    std::cout << std::endl;
 }
+
+struct make_string_functor {
+    std::string operator()(const std::string &x) const { return x; }
+    std::string operator()(int x) const { return std::to_string(x); }
+};
 
 
 int main() {
     try {
         auto graph = graphd::Graph();
 
-        auto a = graph.addNode({ {"name", "a"}, {"value", 1} });
-        auto b = graph.addNode();
-        auto c = graph.addNode();
+        auto frank = graph.addNode({{"type", "person"}, {"name", "Frank"}});
+        auto fay = graph.addNode({{"type", "person"}, {"name", "Fay"}});
+        auto stan = graph.addNode({{"type", "person"}, {"name", "Stan"}});
+        auto ethel = graph.addNode({{"type", "person"}, {"name", "Ethel"}});
+        auto dad = graph.addNode({{"type", "person"}, {"name", "Neil"}});
+        auto mum = graph.addNode({{"type", "person"}, {"name", "Andrea"}});
+        auto ryan = graph.addNode({{"type", "person"}, {"name", "Ryan"}});
+        auto me = graph.addNode({{"type", "person"}, {"name", "Michael"}});
 
-        auto ab = graph.addEdge(a, b);
-        auto bc = graph.addEdge(b, c);
-        auto ca = graph.addEdge(c, a);
+        graph.addEdge(dad, mum, {{"type", "married"}});
+        graph.addEdge(dad, ryan, {{"type", "father"}});
+        graph.addEdge(dad, me, {{"type", "father"}});
+        graph.addEdge(mum, ryan, {{"type", "mother"}});
+        graph.addEdge(mum, me, {{"type", "mother"}});
 
         printGraph(graph);
 
-        graph.removeNode(b);
-        printGraph(graph);
+        auto adjacentNodes = graph.getAdjacentNodes(dad);
+
+        for (auto node : adjacentNodes) {
+            std::cout << node->toString() << std::endl;
+        }
+
+        auto adjacentEdges = graph.getAdjacentEdges(dad);
+
+        for (auto edge : adjacentEdges) {
+            std::cout << edge->toString() << std::endl;
+        }
+
+        std::cout << std::endl;
+
+
+        auto path = graph.findPath(frank, me);
+
+        for (auto edge : path) {
+            std::cout << edge->toString() << " " << std::endl;
+        }
 
     } catch (std::exception e) {
-        BOOST_LOG_TRIVIAL(error) << "Bad shit";
+        BOOST_LOG_TRIVIAL(error) << e.what();
     }
 
     return 0;
